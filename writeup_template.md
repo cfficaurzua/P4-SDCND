@@ -60,6 +60,24 @@ All the threshold applied can be seen below
 
 to reduce unwanted noise a opening morphological operation was perform
 
+A line class was defined that contains information about if the line is detected, the x and y point for current frame, all the line parabola equation parameters up to ten frames, current line parabola equation parameters, the current line equation function and a image of the line.
+the class also has two functions one for updating the parabola equation parameters, and another to get the proper equation parameters. 
+the first function append the new parameters found only if there are not so far away from the previous ones. 
+The other function gets the proper parameters using the median of all the parameters stored.
+
+Then two lines are inititialized, one for the left and another one for the right
+To find each lane lines two windows of fix height are sliced from bottom to top of the image, the width of each varies increasing if nothing is found and shrinking if successfully found a lane, the windows width will never be greater than 150 piels and smaller than 50 pixels. the middle point of the windows is calculated from the median of all white pixels of the previos window
+the result can be seen below
+
+Another function was constructed to find the lanelines from the parabola equation from a previous frame, to perform this the nonzero values of a region surrounding each line equation are taken into account for the new lane lines.
+
+
+a Fit_lines() function fit all the points of each line to a parabola using the polyfit function of numpy then it call the update function of each line class with the coeficients found by the polyfit function.
+the same procedure is perform but with a transformation to real world scale multiplying each component (x and y pixel coordinates) by a factor xm_per_pix and ym_per_pix, this will found a fitting line in the real world, and with the coeficients compute the curvature of the radius given the formula in this [link]http://www.intmath.com/applications-differentiation/8-radius-curvature.php
+the offset is calculated as the difference between the midpoint of the image and the midpoint between both line lanes at the bottom of the picture in bird eye view.
+
+Then a lane is drawn using both fitted lines parabolas with the function cv2.fillPoly and 
+
 #### 2. Describe how (and identify where in your code) you used color transforms, gradients or other methods to create a thresholded binary image.  Provide an example of a binary image result.
 
 I used a combination of color and gradient thresholds to generate a binary image (thresholding steps at lines # through # in `another_file.py`).  Here's an example of my output for this step.  (note: this is not actually from one of the test images)

@@ -30,20 +30,35 @@
 
 #### 1. Briefly state how you computed the camera matrix and distortion coefficients. Provide an example of a distortion corrected calibration image.
 
-I build a function that get the object and image points
+I build a function that get the object and image points from a set of images paths and a given number or rows and colums for the chessboard. at first it prepares the object poitns which is assumed to be fixed on the plane at z = 0, then it iterates throught the images looking for the real coordinates using the funcion provided by opencv to find chessboard patterns, next the aforementioned objecdt points and the recently discovered image points are appended each one to a correponsnding list which are both then returned by the function. 
+The output of the function was then used to compute the camera calibration and distortion coefficients using the cv2.calibrateCamera() function. the parameters were then saved in a file for later use. 
+I constructed a simplified function of the cv2.undistort() function that only takes the image as a parameter.
 
-I start by preparing "object points", which will be the (x, y, z) coordinates of the chessboard corners in the world. Here I am assuming the chessboard is fixed on the (x, y) plane at z=0, such that the object points are the same for each calibration image.  Thus, `objp` is just a replicated array of coordinates, and `objpoints` will be appended with a copy of it every time I successfully detect all chessboard corners in a test image.  `imgpoints` will be appended with the (x, y) pixel position of each of the corners in the image plane with each successful chessboard detection.  
-
-I then used the output `objpoints` and `imgpoints` to compute the camera calibration and distortion coefficients using the `cv2.calibrateCamera()` function.  I applied this distortion correction to the test image using the `cv2.undistort()` function and obtained this result: 
-
+The result can be seen below
 ![alt text][image1]
 
 ### Pipeline (single images)
 
-#### 1. Provide an example of a distortion-corrected image.
-
-To demonstrate this step, I will describe how I apply the distortion correction to one of the test images like this one:
+Once the road images are correctly undistorted using the fucntion as shown below:
 ![alt text][image2]
+
+I proceed to change the perspective view to a bird eye view, in order to achieve this I create a pop up window that shows a picture of a straight road, then it retrieves the coordinates necessary to perfom the transformation, the user has to click the top corners of the lane from left to right following by the bottom left and right corners, a guide line is plotted above the image to help the user find the right coordinates.
+The source points are then saved in a file for later use.
+
+Then a function call get_perspective matrix, retrieve the corresponding perspective transform matrix and the inverse perspective transform matrix from the source points compute earlier and a a destination points which are fixed.
+
+I then wrote a function called change_to-bird_eye, that used cv2.warpPerspective() function and change the  image to a bird eye view using the transform matrix already computed and keeping the original image dimensions.
+
+Next, in order to get a binary image containing only the lane lines i use a series of independent threshold system using horizontal and vertical sobel thresholding as well as the magnitude and direction thresholding as taught in the course, I also compute 
+a second direction threshold using horizontal angles to substract the unwanted pixels from the images, I also use saturation channel from the hls colorspace, also the red and green channels were use as a filter and the l an b channels from the lab color space to enhance the white and yellow lines, all this functions were thresholded with a gauss fuzzy membership function, that outputs a range of certainty values instead of binary values in addition a adaptiveThreshold provided by opencv and a custom horizontal convolution of the image was added for more sturdy filter.
+
+In order to obtain a final binary image, first all thresholded images were combined using the maximum instead of the logic or and the minimum instead of the logical and, so the read and green filter where mixed with the maximum function, as well as the l and b channels, and the pair of horizontal and vertical sobe, the minimum was used in the magnitude and direction threshold.
+Then all results were sum up using corresponding weights of importance.
+The final binary image was the result of evaluating all the pixels that were above .8 after applying all the filters.
+
+All the threshold applied can be seen below
+
+to reduce unwanted noise a opening morphological operation was perform
 
 #### 2. Describe how (and identify where in your code) you used color transforms, gradients or other methods to create a thresholded binary image.  Provide an example of a binary image result.
 

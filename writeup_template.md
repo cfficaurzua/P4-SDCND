@@ -115,4 +115,9 @@ Here's a [link to my video result](./project_video.mp4)
 
 ## Discussion
 
+First I thought that a fuzzy approach would be more robust than a binary one, but a lot of parameters needed to be tuned in order to correctly identify the lane lines in every situation, of course there are times that dazzing lights make really difficult spot the lines 
+the same happens with too dark images. some times a reflection from the windshield obstruct the sight.
+the algorithm made can highlight the lane lines most of the times. I came to notice that the gradients don't work in every situation because sometimes there are cracks on the roads that form lines very similar to the ones we are looking for, but the color discrimation can work alone as well, because the color can varies a lot from frame to frame, the saturation channel work pretty well in most of the situations, but in order to get the optimum result a combination of every tool we had was necessary.
 
+when the algorithm fails to identify the lane lines is important to rely on the history we have to overcome any mistakes, and it is important to filter what we put in the history, so lanes that arent parallel or are too far apart shoulnd't be incorporated to our history, to prevent potentials errors.
+The pipeline made in this project work well in the first video, but not so well as intended in the second and third video, but it could improve with more time spended, fixing some thresholding parameters, changing dynamically the bird eye view transformation, because in straight roads we could look ahead to a far distance, but when the roads have very closed turns, 

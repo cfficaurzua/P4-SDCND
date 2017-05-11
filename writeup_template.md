@@ -81,11 +81,13 @@ To find each lane lines two windows of fix height are sliced from bottom to top 
 An additional function was constructed to find the lane lines from the parabola equation from a previous frame, to perform this the nonzero values of a region surrounding each line equation are taken into account for the new lane lines. 
 
 
-the Fit_lines() function first extract the lines using the find lane lines function explained before if there is no successfully detected lane in the previous frame, if not, it uses the additional function to extract the lane lines with the known coefficients. 
-Then it checks if the lane lines are more or less parallel and if they have the proper distance between them
+the Fit_lines() function first extract the lines points using the find lane lines function explained before if there is no successfully detected lane in the previous frame, if not, it uses the additional function to extract the lane lines with the already known coefficients. 
+Next it retrieves the coefficients using a polyfit function on nummpy.
+Then it checks if the lane lines are more or less parallel by comparing the first coefficient of each line and if they have the proper distance between them comparing the second coefficient term.
+if the lines are roughly parallel and properly separated, the new coefficients are appended to the history of coefficients of each line.
 
-function fit all the points of each line to a parabola using the polyfit function of numpy then it call the update function of each line class with the coeficients found by the polyfit function.
-the same procedure is perform but with a transformation to real world scale multiplying each component (x and y pixel coordinates) by a factor xm_per_pix and ym_per_pix, this will found a fitting line in the real world, and with the coeficients compute the curvature of the radius given the formula in this [link]http://www.intmath.com/applications-differentiation/8-radius-curvature.php
+To compute the radius of curvature a new fitting function is 
+coeficients compute the curvature of the radius given the formula in this [link]http://www.intmath.com/applications-differentiation/8-radius-curvature.php
 the offset is calculated as the difference between the midpoint of the image and the midpoint between both line lanes at the bottom of the picture in bird eye view.
 
 Then a lane is drawn using both fitted lines parabolas with the function cv2.fillPoly and 

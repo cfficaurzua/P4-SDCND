@@ -47,34 +47,44 @@ Once the road images are correctly undistorted using the function as shown below
 I proceed to change the perspective view to a bird eye view, in order to achieve this I create a pop up window that shows a picture of a straight road, then it retrieves the coordinates necessary to perfom the transformation, the user has to click the top corners of the lane from left to right following by the bottom left and right corners, a guide line is plotted above the image to help the user find the right coordinates.
 The source points are then saved in a file for later use.
 
+here you can see an example
+![alt text][image2]
+
 Then a function call get_perspective matrix, retrieve the corresponding perspective transform matrix and the inverse perspective transform matrix from the source points compute earlier and a a destination points which are fixed.
 
-I then wrote a function called change_to-bird_eye, that used cv2.warpPerspective() function and change the  image to a bird eye view using the transform matrix already computed and keeping the original image dimensions.
+I then wrote a function called change_to-bird_eye, that used cv2.warpPerspective() function and change the image to a bird eye view using the transform matrix already computed and keeping the original image dimensions.
+
+here it can be seen the bird eye transformation and later the backwards transformation.
+![alt text][image2]
 
 Next, in order to get a binary image containing only the lane lines i use a series of independent threshold system using horizontal and vertical sobel thresholding as well as the magnitude and direction thresholding as taught in the course, I also compute 
-a second direction threshold using horizontal angles to substract the unwanted pixels from the images, I also use saturation channel from the hls colorspace, also the red and green channels were use as a filter and the l an b channels from the lab color space to enhance the white and yellow lines, all this functions were thresholded with a gauss fuzzy membership function, that outputs a range of certainty values instead of binary values in addition a adaptiveThreshold provided by opencv and a custom horizontal convolution of the image was added for more sturdy filter.
+a second direction threshold using horizontal angles to substract the unwanted pixels from the images, I also use saturation channel from the hls colorspace, also the red and green channels were use as a filter and the l an b channels from the lab color space to enhance the white and yellow lines, all this functions were thresholded with a gauss fuzzy membership function, that outputs a range of certainty values instead of binary values, in addition a adaptiveThreshold provided by opencv and a custom horizontal convolution of the image was added for a more sturdy filter.
 
-In order to obtain a final binary image, first all thresholded images were combined using the maximum instead of the logic or and the minimum instead of the logical and, so the read and green filter where mixed with the maximum function, as well as the l and b channels, and the pair of horizontal and vertical sobe, the minimum was used in the magnitude and direction threshold.
+In order to obtain a final binary image, first all thresholded images were combined using the maximum instead of the logic *or* and the minimum instead of the logical *and*, so the red and green filter where mixed with the maximum function, as well as the l and b channels, and the pair of horizontal and vertical sobel, the minimum was used in the magnitude and direction threshold.
 Then all results were sum up using corresponding weights of importance.
 The final binary image was the result of evaluating all the pixels that were above .8 after applying all the filters.
 
 All the threshold applied can be seen below
+![alt text][image2]
 
-to reduce unwanted noise a opening morphological operation was perform
+to reduce unwanted noise a opening morphological operation was perform as shown below
+![alt text][image2]
 
 A line class was defined that contains information about if the line is detected, the x and y point for current frame, all the line parabola equation parameters up to ten frames, current line parabola equation parameters, the current line equation function and a image of the line.
 the class also has two functions one for updating the parabola equation parameters, and another to get the proper equation parameters. 
-the first function append the new parameters found only if there are not so far away from the previous ones. 
-The other function gets the proper parameters using the median of all the parameters stored.
+the first function append the new parameters found. 
+The other function gets the proper parameters using the median of all the coeficients stored.
 
 Then two lines are inititialized, one for the left and another one for the right
-To find each lane lines two windows of fix height are sliced from bottom to top of the image, the width of each varies increasing if nothing is found and shrinking if successfully found a lane, the windows width will never be greater than 150 piels and smaller than 50 pixels. the middle point of the windows is calculated from the median of all white pixels of the previos window
-the result can be seen below
+To find each lane lines two windows of fix height are sliced from bottom to top of the image, the width of each varies increasing if nothing is found and shrinking if successfully found a lane, the windows width will never be greater than 150 pixels and smaller than 50 pixels. the middle point of the windows is calculated from the peak of a histogram of the window weighted so that the pixels farther from the center of the window are less important than the ones in the middle.
 
-Another function was constructed to find the lanelines from the parabola equation from a previous frame, to perform this the nonzero values of a region surrounding each line equation are taken into account for the new lane lines.
+An additional function was constructed to find the lane lines from the parabola equation from a previous frame, to perform this the nonzero values of a region surrounding each line equation are taken into account for the new lane lines. 
 
 
-a Fit_lines() function fit all the points of each line to a parabola using the polyfit function of numpy then it call the update function of each line class with the coeficients found by the polyfit function.
+the Fit_lines() function first extract the lines using the find lane lines function explained before if there is no successfully detected lane in the previous frame, if not, it uses the additional function to extract the lane lines with the known coefficients. 
+Then it checks if the lane lines are more or less parallel and if they have the proper distance between them
+
+function fit all the points of each line to a parabola using the polyfit function of numpy then it call the update function of each line class with the coeficients found by the polyfit function.
 the same procedure is perform but with a transformation to real world scale multiplying each component (x and y pixel coordinates) by a factor xm_per_pix and ym_per_pix, this will found a fitting line in the real world, and with the coeficients compute the curvature of the radius given the formula in this [link]http://www.intmath.com/applications-differentiation/8-radius-curvature.php
 the offset is calculated as the difference between the midpoint of the image and the midpoint between both line lanes at the bottom of the picture in bird eye view.
 

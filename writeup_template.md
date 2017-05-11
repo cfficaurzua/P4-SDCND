@@ -1,6 +1,6 @@
 
 
-**Advanced Lane Finding Project**
+# **Advanced Lane Finding Project**
 
 ## Introduction
 
@@ -17,8 +17,8 @@
 
 [//]: # (Image References)
 
-[image1]: ./examples/undistort_output.png "Undistorted"
-[image2]: ./test_images/test1.jpg "Road Transformed"
+[image1]: ./examples/find_chess_board_example.PNG "Undistorted"
+[image2]: ./examples/undistored_output.PNG "Road Transformed"
 [image3]: ./examples/binary_combo_example.jpg "Binary Example"
 [image4]: ./examples/warped_straight_lines.jpg "Warp Example"
 [image5]: ./examples/color_fit_lines.jpg "Fit Visual"
@@ -28,18 +28,20 @@
 
 ## Camera Calibration
 
-#### 1. Briefly state how you computed the camera matrix and distortion coefficients. Provide an example of a distortion corrected calibration image.
-
 I build a function that get the object and image points from a set of images paths and a given number or rows and colums for the chessboard. at first it prepares the object poitns which is assumed to be fixed on the plane at z = 0, then it iterates throught the images looking for the real coordinates using the funcion provided by opencv to find chessboard patterns, next the aforementioned objecdt points and the recently discovered image points are appended each one to a correponsnding list which are both then returned by the function. 
+
+Find chessboard corners in action:
+![alt text][image1]
+
 The output of the function was then used to compute the camera calibration and distortion coefficients using the cv2.calibrateCamera() function. the parameters were then saved in a file for later use. 
 I constructed a simplified function of the cv2.undistort() function that only takes the image as a parameter.
 
 The result can be seen below
-![alt text][image1]
+![alt text][image2]
 
 ### Pipeline (single images)
 
-Once the road images are correctly undistorted using the fucntion as shown below:
+Once the road images are correctly undistorted using the function as shown below:
 ![alt text][image2]
 
 I proceed to change the perspective view to a bird eye view, in order to achieve this I create a pop up window that shows a picture of a straight road, then it retrieves the coordinates necessary to perfom the transformation, the user has to click the top corners of the lane from left to right following by the bottom left and right corners, a guide line is plotted above the image to help the user find the right coordinates.

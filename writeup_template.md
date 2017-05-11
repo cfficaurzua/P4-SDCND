@@ -70,13 +70,12 @@ All the threshold applied can be seen below
 to reduce unwanted noise a opening morphological operation was perform as shown below
 ![alt text][image2]
 
-A line class was defined that contains information about if the line is detected, the x and y point for current frame, all the line parabola equation parameters up to ten frames, current line parabola equation parameters, the current line equation function and a image of the line.
+A line class was defined that contains information about if the line is detected, the x and y points for the current frame, all the line's second order polynomial coefficients up to ten frames, the current line polynomial equation function and a image of the line.
 the class also has two functions one for updating the parabola equation parameters, and another to get the proper equation parameters. 
-the first function append the new parameters found. 
-The other function gets the proper parameters using the median of all the coeficients stored.
+the first function append the new coefficients found while the other function gets the proper coefficients using the median of all the coeficients stored.
 
 Then two lines are inititialized, one for the left and another one for the right
-To find each lane lines two windows of fix height are sliced from bottom to top of the image, the width of each varies increasing if nothing is found and shrinking if successfully found a lane, the windows width will never be greater than 150 pixels and smaller than 50 pixels. the middle point of the windows is calculated from the peak of a histogram of the window weighted so that the pixels farther from the center of the window are less important than the ones in the middle.
+To find each lane lines two windows of fix height are sliced from bottom to top of the image, the width of each window varies increasing if nothing is found and shrinking if successfully found a lane, the windows width will never be greater than 150 pixels and smaller than 50 pixels. the middle point of the windows is calculated from the peak of a histogram of the window weighted so that the pixels farther from the center of the window are less important than the ones in the middle.
 
 An additional function was constructed to find the lane lines from the parabola equation from a previous frame, to perform this the nonzero values of a region surrounding each line equation are taken into account for the new lane lines. 
 
@@ -86,76 +85,34 @@ Next it retrieves the coefficients using a polyfit function on nummpy.
 Then it checks if the lane lines are more or less parallel by comparing the first coefficient of each line and if they have the proper distance between them comparing the second coefficient term.
 if the lines are roughly parallel and properly separated, the new coefficients are appended to the history of coefficients of each line.
 
-To compute the radius of curvature a new fitting function is 
-coeficients compute the curvature of the radius given the formula in this [link]http://www.intmath.com/applications-differentiation/8-radius-curvature.php
+To compute the radius of curvature the x and y values are multiply each with a corresponding factor to scale to real word dimension, in this case the x values were multiply by 3.7/700 m/px and the y values were multiply by 30/720 m/px.
+Then new coefficients were obtained from the polyfit function embedded in numpy.
+With the new coefficients the radius of curvater was calculated by the given the formula in this [link]http://www.intmath.com/applications-differentiation/8-radius-curvature.php
+
 the offset is calculated as the difference between the midpoint of the image and the midpoint between both line lanes at the bottom of the picture in bird eye view.
 
-Then a lane is drawn using both fitted lines parabolas with the function cv2.fillPoly and 
+Then a lane is drawn using both fitted lines parabolas with the function cv2.fillPoly over a black image then it was transform backwards to the original perspective using the inverse perspective matrix already obtained.
+to blend the lane into the original picture the cv2.addWeighted function was used.
+to overlay the lines a mask was created using the same function cv2.fillpoly and then transform as well to the original perspective. the pixels within the mask region were change with blue.
 
-#### 2. Describe how (and identify where in your code) you used color transforms, gradients or other methods to create a thresholded binary image.  Provide an example of a binary image result.
+Then to add the corresponding text the cv2.putText function was used.
 
-I used a combination of color and gradient thresholds to generate a binary image (thresholding steps at lines # through # in `another_file.py`).  Here's an example of my output for this step.  (note: this is not actually from one of the test images)
+The final result for a picture can be seen below:
 
-![alt text][image3]
+## Pipeline (video)
 
-#### 3. Describe how (and identify where in your code) you performed a perspective transform and provide an example of a transformed image.
+To process a video, first both lines instances are initialized with default values, and then a function called proccess_video is called for each frame in which the following sequence is run:
 
-The code for my perspective transform includes a function called `warper()`, which appears in lines 1 through 8 in the file `example.py` (output_images/examples/example.py) (or, for example, in the 3rd code cell of the IPython notebook).  The `warper()` function takes as inputs an image (`img`), as well as source (`src`) and destination (`dst`) points.  I chose the hardcode the source and destination points in the following manner:
-
-```python
-src = np.float32(
-    [[(img_size[0] / 2) - 55, img_size[1] / 2 + 100],
-    [((img_size[0] / 6) - 10), img_size[1]],
-    [(img_size[0] * 5 / 6) + 60, img_size[1]],
-    [(img_size[0] / 2 + 55), img_size[1] / 2 + 100]])
-dst = np.float32(
-    [[(img_size[0] / 4), 0],
-    [(img_size[0] / 4), img_size[1]],
-    [(img_size[0] * 3 / 4), img_size[1]],
-    [(img_size[0] * 3 / 4), 0]])
-```
-
-This resulted in the following source and destination points:
-
-| Source        | Destination   | 
-|:-------------:|:-------------:| 
-| 585, 460      | 320, 0        | 
-| 203, 720      | 320, 720      |
-| 1127, 720     | 960, 720      |
-| 695, 460      | 960, 0        |
-
-I verified that my perspective transform was working as expected by drawing the `src` and `dst` points onto a test image and its warped counterpart to verify that the lines appear parallel in the warped image.
-
-![alt text][image4]
-
-#### 4. Describe how (and identify where in your code) you identified lane-line pixels and fit their positions with a polynomial?
-
-Then I did some other stuff and fit my lane lines with a 2nd order polynomial kinda like this:
-
-![alt text][image5]
-
-#### 5. Describe how (and identify where in your code) you calculated the radius of curvature of the lane and the position of the vehicle with respect to center.
-
-I did this in lines # through # in my code in `my_other_file.py`
-
-#### 6. Provide an example image of your result plotted back down onto the road such that the lane area is identified clearly.
-
-I implemented this step in lines # through # in my code in `yet_another_file.py` in the function `map_lane()`.  Here is an example of my result on a test image:
-
-![alt text][image6]
-
----
-
-### Pipeline (video)
-
-#### 1. Provide a link to your final video output.  Your pipeline should perform reasonably well on the entire project video (wobbly lines are ok but no catastrophic failures that would cause the car to drive off the road!).
+1. undistort frame
+2. change to bird eye view
+3. obtain a combined binary image from thresholding process
+4. apply opening morphological operation in order to denoise
+5. run fit lines function
+6. retrieve curvature and offset
+7. draw result
 
 Here's a [link to my video result](./project_video.mp4)
 
----
+## Discussion
 
-### Discussion
 
-#### 1. Briefly discuss any problems / issues you faced in your implementation of this project.  Where will your pipeline likely fail?  What could you do to make it more robust?
-
-Here I'll talk about the approach I took, what techniques I used, what worked and why, where the pipeline might fail and how I might improve it if I were going to pursue this project further.  

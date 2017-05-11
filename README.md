@@ -21,6 +21,7 @@
 [image4]: ./examples/pop_up_window.gif "pop_up_window"
 [image5]: ./examples/bird_eye_view_transform.PNG "bird_eye_view_transform"
 [image6]: ./examples/thresholding_example.PNG "thresholding example"
+[image6.1]: ./examples/thresholding_example2.PNG "thresholding example"
 [image7]: ./examples/opening.PNG "Opening"
 [image8]: ./examples/red_line_finding.PNG "Opening"
 [image9]: ./examples/blue_line_finding.PNG "Opening"
@@ -75,6 +76,10 @@ The final binary image was the result of evaluating all the pixels that were abo
 All the threshold applied can be seen below
 
 ![alt text][image6]
+
+And for a closed turn curve
+
+![alt text][image6.1]
 
 to reduce unwanted noise a opening morphological operation was perform as shown below
 

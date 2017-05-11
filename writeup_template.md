@@ -16,8 +16,8 @@
 [//]: # (Image References)
 
 [image1]: ./examples/find_chess_board_example.PNG "find_chess_board_example"
-[image2]: ./examples/undistored_output.PNG "Road Transformed"
-[image3]: ./examples/undistored_road_image.PNG "Road Transformed"
+[image2]: ./examples/undistort_output.PNG "Road Transformed"
+[image3]: ./examples/undistorted_road_image.PNG "Road Transformed"
 [image4]: ./examples/pop_up_window.gif "pop_up_window"
 [image5]: ./examples/bird_eye_view_transform.PNG "bird_eye_view_transform"
 [image6]: ./examples/thresholding_example.PNG "thresholding example"
@@ -25,7 +25,7 @@
 [image8]: ./examples/red_line_finding.PNG "Opening"
 [image9]: ./examples/blue_line_finding.PNG "Opening"
 [image10]: ./examples/fitted_curves.PNG "Opening"
-[image10]: ./examples/output_picture.PNG "Opening"
+[image11]: ./examples/output_picture.PNG "Opening"
 [video1]: ./project_video.mp4 "Video"
 
 

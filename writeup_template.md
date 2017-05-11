@@ -132,9 +132,11 @@ To process a video, first both lines instances are initialized with default valu
 6. retrieve curvature and offset
 7. draw result
 
-Here's a [link the project video result](./video_output2.mp4)
-Here's a [link the challenge video result](./video_output3.mp4)
-Here's a [link the harder challenge video result](./video_output4.mp4)
+Here's a [link the project video result](https://youtu.be/Hv0LJoyh5WE)
+
+Here's a [link the challenge video result](https://youtu.be/7NgkY64JPwM)
+
+Here's a [link the harder challenge video result](https://youtu.be/-ZX00RNBWco)
 
 
 ## Discussion
@@ -143,5 +145,11 @@ First I thought that a fuzzy approach would be more robust than a binary one, bu
 the same happens with too dark images. some times a reflection from the windshield obstruct the sight.
 the algorithm made can highlight the lane lines most of the times. I came to notice that the gradients don't work in every situation because sometimes there are cracks on the roads that form lines very similar to the ones we are looking for, but the color discrimation can work alone as well, because the color can varies a lot from frame to frame, the saturation channel work pretty well in most of the situations, but in order to get the optimum result a combination of every tool we had was necessary.
 
-when the algorithm fails to identify the lane lines is important to rely on the history we have to overcome any mistakes, and it is important to filter what we put in the history, so lanes that arent parallel or are too far apart shoulnd't be incorporated to our history, to prevent potentials errors.
-The pipeline made in this project work well in the first video, but not so well as intended in the second and third video, but it could improve with more time spended, fixing some thresholding parameters, changing dynamically the bird eye view transformation, because in straight roads we could look ahead to a far distance, but when the roads have very closed turns, 
+When the algorithm fails to identify the lane lines is important to rely on the history we have to overcome any mistakes, and it is important to filter what we put in the history, so lanes that arent parallel or are too far apart shoulnd't be incorporated to our history, to prevent potentials errors.
+The pipeline made in this project work well in the first video, but not so well as intended in the second and third video, but it could be improved with more time spended, fixing some thresholding parameters, changing dynamically the bird eye view transformation, because in straight roads we could look ahead to a far distance, but when the roads have very closed turns, the foresight should be narrowed to allow a better tracking of the lane lines.
+To improve the model more, planning ahead is needed, predicting where the lanes would be would help to better track them.
+
+to have a better tranformation of dimensions into the real world a procedure similar to the distortion correction where photos of chessboard are taken can be done, maybe a chessboard pattern can be laid down in the road so we can measure how far apart are the pixels in the real world and have a better transformation.
+
+
+ 

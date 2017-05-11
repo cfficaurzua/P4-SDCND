@@ -16,8 +16,8 @@
 [//]: # (Image References)
 
 [image1]: ./examples/find_chess_board_example.PNG "find_chess_board_example"
-[image2]: ./examples/undistort_output.PNG "Road Transformed"
-[image3]: ./examples/undistorted_road_image.PNG "Road Transformed"
+[image2]: ./examples/undistort_output.png "undistort_output"
+[image3]: ./examples/undistorted_road_image.PNG "undistorted_road_image"
 [image4]: ./examples/pop_up_window.gif "pop_up_window"
 [image5]: ./examples/bird_eye_view_transform.PNG "bird_eye_view_transform"
 [image6]: ./examples/thresholding_example.PNG "thresholding example"
